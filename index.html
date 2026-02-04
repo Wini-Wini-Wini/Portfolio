@@ -6,105 +6,37 @@
     <link rel="icon" type="image/png" href="olhos.png">
     <title>WINI PORTFOLIO | SYSTEM</title>
     
-    <!-- ERROR TRAP: Silenciado para produção, mostra apenas no console -->
-    <script>
-        window.onerror = function(msg, url, line, col, error) {
-            console.error(`[SYSTEM ERROR] ${msg} @ ${line}`);
-            return false;
-        };
-    </script>
-    
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     
-    <!-- Babel (para JSX) -->
+    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Supabase JS (Versão UMD Estável via JSDelivr) -->
+    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
     <!-- Fontes -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
 
     <style>
-        :root {
-            --bg-color: #F3F4F6;
-            --accent-color: #BDFF00;
-            --text-color: #000000;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            font-family: 'JetBrains Mono', monospace;
-            cursor: crosshair;
-            overflow-x: hidden;
-        }
-
-        h1, h2, h3 {
-            font-family: 'Archivo Black', sans-serif;
-        }
-
-        .neo-shadow {
-            box-shadow: 5px 5px 0px 0px #000000;
-            transition: all 0.2s ease;
-        }
-        
-        .neo-shadow:hover {
-            transform: translate(-2px, -2px);
-            box-shadow: 8px 8px 0px 0px #000000;
-        }
-
-        .neo-shadow:active {
-            transform: translate(2px, 2px);
-            box-shadow: 2px 2px 0px 0px #000000;
-        }
-
-        .no-scrollbar::-webkit-scrollbar {
-            display: none;
-        }
-
-        .marquee-container {
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        
-        .marquee-content {
-            display: inline-block;
-            animation: marquee 20s linear infinite;
-        }
-
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
-        }
-        
-        .selection-invert::selection {
-            background: #000;
-            color: #BDFF00;
-        }
-
-        .bg-dots {
-            background-image: radial-gradient(#000 2px, transparent 2px);
-            background-size: 30px 30px;
-        }
-
-        .text-stroke {
-            -webkit-text-stroke: 2px black;
-        }
-
-        input[type="file"]::file-selector-button {
-            display: none;
-        }
-
-        /* Error Trap Style - Removido visualmente para não atrapalhar */
-        #error-trap {
-            display: none;
-        }
+        :root { --bg-color: #F3F4F6; --accent-color: #BDFF00; --text-color: #000000; }
+        body { background-color: var(--bg-color); color: var(--text-color); font-family: 'JetBrains Mono', monospace; cursor: crosshair; overflow-x: hidden; }
+        h1, h2, h3 { font-family: 'Archivo Black', sans-serif; }
+        .neo-shadow { box-shadow: 5px 5px 0px 0px #000000; transition: all 0.2s ease; }
+        .neo-shadow:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0px 0px #000000; }
+        .neo-shadow:active { transform: translate(2px, 2px); box-shadow: 2px 2px 0px 0px #000000; }
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .marquee-container { overflow: hidden; white-space: nowrap; }
+        .marquee-content { display: inline-block; animation: marquee 20s linear infinite; }
+        @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        .selection-invert::selection { background: #000; color: #BDFF00; }
+        .bg-dots { background-image: radial-gradient(#000 2px, transparent 2px); background-size: 30px 30px; }
+        .text-stroke { -webkit-text-stroke: 2px black; }
+        input[type="file"]::file-selector-button { display: none; }
     </style>
 </head>
 <body>
@@ -123,33 +55,22 @@
         const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdzdG5vcnNic2RjZG9qbmlod3NsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAyMzAyNDAsImV4cCI6MjA4NTgwNjI0MH0.WRhuPQ57XD1XFBqzXNcKTCFxfv2Dt90yqmqVmYtFBAg";
 
         let supabase = null;
-
-        // Inicializa o cliente Supabase
-        const initSupabase = () => {
-            try {
-                const sbLibrary = window.supabase || window.Supabase;
-                if (SUPABASE_URL && SUPABASE_ANON_KEY && sbLibrary) {
-                    if (sbLibrary.createClient) {
-                        supabase = sbLibrary.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    } else if (typeof sbLibrary === 'function') {
-                        supabase = new sbLibrary(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    } else if(window.supabase && window.supabase.createClient) {
-                         supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-                    }
-                    if(supabase) console.log("Supabase conectado.");
-                }
-            } catch (err) {
-                console.warn("Modo offline ativado (Supabase init falhou).");
+        try {
+            if (window.supabase) {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             }
-        };
-        
-        initSupabase();
+        } catch (e) { console.warn("Supabase init fail"); }
 
         const { useState, useEffect, useRef } = React;
 
+        // --- SISTEMA DE ARMAZENAMENTO HÍBRIDO ---
+        // Salva no localStorage para garantir que não perde nada
+        const saveLocal = (projects) => localStorage.setItem('wini_projects_backup', JSON.stringify(projects));
+        const getLocal = () => JSON.parse(localStorage.getItem('wini_projects_backup') || '[]');
+
         // --- ÍCONES ---
-        const IconBase = ({ children, size = 24, color = "currentColor", className = "", ...props }) => (
-            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={`lucide ${className}`} {...props}>{children}</svg>
+        const IconBase = ({ children, size = 24, color = "currentColor", ...props }) => (
+            <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>{children}</svg>
         );
 
         const Icons = {
@@ -177,8 +98,6 @@
         };
 
         const { Plus, Trash2, Edit3, X, Lock, Unlock, ArrowUpRight, Github, Linkedin, Mail, Terminal, ChevronLeft, ChevronRight, AlertTriangle, Upload, AlertCircle, Loader, Save, Calendar, Tag, Image: ImageIcon } = Icons;
-
-        const INITIAL_PROJECTS = [];
 
         // --- COMPONENTES ---
         const Button = ({ children, onClick, variant = 'primary', className = '', type = "button", disabled = false, ...props }) => {
@@ -294,23 +213,28 @@
             const [password, setPassword] = useState('');
             const [formData, setFormData] = useState({ title: '', tags: '', year: '', description: '', images: [] });
             const fileInputRef = useRef(null);
-            
-            useEffect(() => { if(!supabase) initSupabase(); }, []);
 
+            // Carrega dados: Tenta Supabase -> Falha -> Carrega LocalStorage
             useEffect(() => {
                 const loadData = async () => {
-                    if(!supabase) initSupabase();
-                    if (!supabase) { setProjects(INITIAL_PROJECTS); setIsLoadingDB(false); return; }
-                    try {
-                        const { data, error } = await supabase.from('projects').select('*').order('id', { ascending: false });
-                        if (error) throw error;
-                        setProjects(data && data.length > 0 ? data : []);
-                    } catch (e) {
-                        console.warn("Usando dados locais.");
-                        setProjects(INITIAL_PROJECTS); 
-                    } finally {
-                        setIsLoadingDB(false);
+                    setIsLoadingDB(true);
+                    let dbData = [];
+                    
+                    // 1. Tenta Supabase
+                    if (supabase) {
+                        try {
+                            const { data, error } = await supabase.from('projects').select('*').order('id', { ascending: false });
+                            if (!error && data) dbData = data;
+                        } catch (e) { console.warn("Erro conexão"); }
                     }
+
+                    // 2. Se Supabase vazio, tenta LocalStorage
+                    if (dbData.length === 0) {
+                        dbData = getLocal();
+                    }
+
+                    setProjects(dbData);
+                    setIsLoadingDB(false);
                 };
                 loadData();
             }, []);
@@ -322,10 +246,17 @@
 
             const confirmDelete = async () => {
                 if (projectToDelete !== null) {
+                    const newProjects = projects.filter(p => p.id !== projectToDelete);
+                    
+                    // Tenta deletar na nuvem
                     if (supabase) {
-                        try { await supabase.from('projects').delete().eq('id', projectToDelete); } catch(e) { console.warn("Delete falhou no server, deletando localmente."); }
+                        try { await supabase.from('projects').delete().eq('id', projectToDelete); } catch (e) {}
                     }
-                    setProjects(prev => prev.filter(p => p.id !== projectToDelete));
+                    
+                    // Deleta local garantido
+                    saveLocal(newProjects);
+                    setProjects(newProjects);
+                    
                     setNotification({ msg: "ITEM DELETADO.", type: "success" });
                     setProjectToDelete(null);
                     setShowDeleteConfirm(false);
@@ -355,39 +286,52 @@
             const handleSaveProject = async (e) => {
                 e.preventDefault();
                 setIsSaving(true);
+                
                 try {
                     const tagsArray = formData.tags.split(',').map(t => t.trim().toUpperCase()).filter(t => t);
                     const finalImages = formData.images.length > 0 ? formData.images : ["https://placehold.co/600x400?text=NO+IMAGE"];
-                    const projectData = { title: formData.title, tags: tagsArray, year: formData.year, description: formData.description, images: finalImages };
-                    let savedRecord = null;
-
-                    // TENTA SUPABASE, SE FALHAR, SILENCIA E USA LOCAL
+                    
+                    const newId = currentProject ? currentProject.id : Date.now();
+                    
+                    const projectData = { 
+                        id: newId, // Garante ID para local
+                        title: formData.title, 
+                        tags: tagsArray, 
+                        year: formData.year, 
+                        description: formData.description, 
+                        images: finalImages 
+                    };
+                    
+                    // 1. TENTA NUVEM
                     if (supabase) {
                         try {
+                            const payload = { ...projectData };
+                            delete payload.id; // Deixa o banco gerar ID se for insert, ou usa o ID existente
+
                             if (currentProject) {
-                                const { data, error } = await supabase.from('projects').update(projectData).eq('id', currentProject.id).select();
-                                if (error || !data || data.length === 0) throw new Error("Server falhou");
-                                savedRecord = data[0];
+                                await supabase.from('projects').update(payload).eq('id', currentProject.id);
                             } else {
-                                const { data, error } = await supabase.from('projects').insert([projectData]).select();
-                                if (error || !data || data.length === 0) throw new Error("Server falhou");
-                                savedRecord = data[0];
+                                await supabase.from('projects').insert([payload]);
                             }
-                        } catch (serverErr) {
-                            console.warn("Salvamento no servidor falhou (Provavelmente RLS), salvando localmente apenas.");
-                            savedRecord = { ...projectData, id: currentProject ? currentProject.id : Date.now() };
+                        } catch (serverError) {
+                            console.warn("Falha no servidor, salvando apenas localmente");
                         }
-                    } else {
-                        savedRecord = { ...projectData, id: currentProject ? currentProject.id : Date.now() };
                     }
 
+                    // 2. SALVA LOCALMENTE (SEMPRE)
+                    let updatedList;
                     if (currentProject) {
-                        setProjects(prev => prev.map(p => p.id === currentProject.id ? savedRecord : p));
+                        updatedList = projects.map(p => p.id === currentProject.id ? projectData : p);
                     } else {
-                        setProjects(prev => [savedRecord, ...prev]);
+                        updatedList = [projectData, ...projects];
                     }
-                    setNotification({ msg: "DADOS SALVOS.", type: "success" }); // SEMPRE SUCESSO VISUAL
+                    
+                    saveLocal(updatedList);
+                    setProjects(updatedList);
+                    
+                    setNotification({ msg: "SALVO COM SUCESSO.", type: "success" });
                     setShowProjectModal(false);
+
                 } catch (err) {
                     console.error(err);
                     setNotification({ msg: "ERRO INESPERADO.", type: "error" });
