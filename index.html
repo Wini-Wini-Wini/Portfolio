@@ -5,6 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>WINI PORTFOLIO | SYSTEM</title>
     
+    <!-- ERROR TRAP: Mostra erros na tela para facilitar o debug no GitHub Pages -->
+    <script>
+        window.onerror = function(msg, url, line, col, error) {
+            const errorBox = document.getElementById('error-trap');
+            if (errorBox) {
+                errorBox.style.display = 'block';
+                errorBox.innerHTML += `<div>[ERROR] ${msg} (Line: ${line})</div>`;
+            }
+            return false;
+        };
+    </script>
+    
     <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
@@ -15,8 +27,8 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Supabase JS -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <!-- Supabase JS (Versão UMD Explícita para evitar erros de módulo) -->
+    <script src="https://unpkg.com/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 
     <!-- Fontes -->
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -83,10 +95,38 @@
         input[type="file"]::file-selector-button {
             display: none;
         }
+
+        /* Error Trap Style */
+        #error-trap {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #ff0000;
+            color: white;
+            padding: 10px;
+            z-index: 9999;
+            font-size: 12px;
+            font-weight: bold;
+            border-bottom: 4px solid black;
+        }
     </style>
 </head>
 <body>
-    <div id="root"></div>
+    <!-- Container de Erros -->
+    <div id="error-trap">SYSTEM ERROR REPORT:</div>
+
+    <!-- Container Root com Fallback Visual -->
+    <div id="root">
+        <div style="height: 100vh; display: flex; align-items: center; justify-content: center; flex-direction: column;">
+            <div style="font-weight: bold; font-size: 24px; margin-bottom: 20px;">WINI_SYSTEM_INITIALIZING...</div>
+            <div style="width: 200px; height: 20px; border: 2px solid black; background: #fff;">
+                <div style="width: 50%; height: 100%; background: #BDFF00;"></div>
+            </div>
+            <p style="margin-top: 10px; font-size: 12px; opacity: 0.5;">If this persists, check console.</p>
+        </div>
+    </div>
 
     <script type="text/babel">
         // --- CONFIGURAÇÃO DO SUPABASE ---
@@ -95,8 +135,14 @@
 
         // Inicializa o cliente Supabase apenas se as chaves existirem
         let supabase = null;
-        if (SUPABASE_URL && SUPABASE_ANON_KEY) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        try {
+            if (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) {
+                supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            } else if (SUPABASE_URL && SUPABASE_ANON_KEY && !window.supabase) {
+                console.error("Supabase library not loaded correctly.");
+            }
+        } catch (err) {
+            console.error("Supabase init error:", err);
         }
 
         const { useState, useEffect, useRef } = React;
