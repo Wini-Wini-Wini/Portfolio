@@ -91,6 +91,16 @@
             color: #BDFF00;
         }
 
+        /* Classes Específicas para evitar conflito com Jekyll do GitHub Pages */
+        .bg-dots {
+            background-image: radial-gradient(#000 2px, transparent 2px);
+            background-size: 30px 30px;
+        }
+
+        .text-stroke {
+            -webkit-text-stroke: 2px black;
+        }
+
         /* Custom File Input Styles */
         input[type="file"]::file-selector-button {
             display: none;
@@ -669,9 +679,7 @@
 
                     {/* HERO */}
                     <section className="min-h-screen flex flex-col justify-center pt-20 relative overflow-hidden">
-                        <div className="absolute inset-0 opacity-10" 
-                            style={{ backgroundImage: 'radial-gradient(#000 2px, transparent 2px)', backgroundSize: '30px 30px' }}>
-                        </div>
+                        <div className="absolute inset-0 opacity-10 bg-dots"></div>
 
                         <div className="container mx-auto px-4 z-10 flex flex-col items-center text-center">
                             <div className="animate-[slideUp_0.8s_ease-out]">
@@ -681,7 +689,7 @@
                                 <h1 className="text-[15vw] leading-[0.85] tracking-tighter mix-blend-difference text-black drop-shadow-[5px_5px_0px_#BDFF00]">
                                     WINI
                                 </h1>
-                                <h1 className="text-[15vw] leading-[0.85] tracking-tighter text-transparent bg-clip-text bg-black stroke-black stroke-2" style={{ WebkitTextStroke: '2px black' }}>
+                                <h1 className="text-[15vw] leading-[0.85] tracking-tighter text-transparent bg-clip-text bg-black stroke-black stroke-2 text-stroke">
                                     PORTFOLIO
                                 </h1>
                             </div>
